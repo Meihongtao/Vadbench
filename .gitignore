@@ -1,0 +1,64 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+.venv.bak*/
+venv/
+env/
+
+# --- Tooling caches ---
+.tmp/
+.uv-cache/
+.uv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Downloaded assets (fetch with: python -m vadbench.download) ---
+models/**
+!models/.gitkeep
+# Records the vendor commits / model revisions each result was produced with,
+# which is what makes the committed results/ numbers traceable.
+!models/DOWNLOAD_MANIFEST.json
+# vendor/ holds git clones of upstream repos; only our notes about them are ours.
+vendor/**
+!vendor/.gitkeep
+!vendor/*.NOTES.md
+
+# --- Evaluation data (huge; fetch with: python -m vadbench.eval.download_data) ---
+data/**
+!data/.gitkeep
+
+# --- Evaluation outputs ---
+# results/ IS tracked: the README tables and docs/实验结果汇总.md are derived
+# from these raw files, so they ship with the repo to stay verifiable.
+# Only the timestamped re-analysis output is ignored, since anyone can
+# regenerate it locally with `python -m vadbench.report`.
+results/**
+!results/.gitkeep
+!results/eval_*.json
+!results/summary_*.csv
+!results/perf_*.csv
+!results/perf_*.json
+results/report/
+
+# --- Stray audio (datasets live under data/) ---
+*.wav
+
+# --- Editors / OS ---
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db

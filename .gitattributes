@@ -1,0 +1,18 @@
+# Normalize to LF in the repo; check out with the platform default.
+# Matters here because results/summary_*.csv are committed and diffed, and a
+# CRLF flip would make every line look changed.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.onnx binary
+*.pt binary
+*.pth binary
+*.tar binary
+*.gz binary
+*.zip binary
+*.wav binary
+*.flac binary

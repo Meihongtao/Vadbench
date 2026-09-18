@@ -1,0 +1,63 @@
+[build-system]
+# PEP 639 (license = "MIT" + license-files) needs setuptools >= 77.
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vadbench"
+version = "0.1.0"
+description = "Unified segment-level VAD interface for benchmarking 5 open-source VAD engines over 57 h of meeting and conversational speech"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["vad", "voice-activity-detection", "speech", "benchmark", "diarization"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+dependencies = [
+    "numpy>=1.23",
+    "soundfile>=0.12",
+    "huggingface_hub>=0.20",
+    "requests>=2.28",
+]
+
+[project.urls]
+Blog = "https://meihongtao.github.io/blogs/Vad%E8%AF%84%E6%B5%8B.html"
+Documentation = "https://github.com/Meihongtao/Vadbench/tree/main/docs"
+
+[project.optional-dependencies]
+webrtc = ["webrtcvad>=2.0.10"]
+silero = ["silero-vad>=5.1", "torch>=2.0", "torchaudio>=2.0", "onnxruntime>=1.16"]
+funasr = ["funasr>=1.1", "torch>=2.0"]
+pyannote = ["pyannote.audio>=3.1", "torch>=2.0"]
+firered = ["torch>=2.0", "torchaudio>=2.0"]
+download = ["huggingface_hub>=0.20", "requests>=2.28"]
+all = [
+    "vadbench[webrtc,silero,funasr,pyannote,firered,download]",
+]
+
+[project.scripts]
+vadbench-download = "vadbench.download:main"
+vadbench-eval = "vadbench.eval.__main__:main"
+vadbench-perf = "vadbench.perf.__main__:main"
+vadbench-report = "vadbench.report.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["vadbench*"]
+
+[tool.setuptools.package-data]
+vadbench = ["py.typed"]
+
+# uv: 默认使用阿里云 PyPI 镜像
+[[tool.uv.index]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true

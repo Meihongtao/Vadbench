@@ -1,0 +1,42 @@
+{
+  "webrtc": {
+    "vendor": "vendor/py-webrtcvad",
+    "repo": "https://github.com/wiseman/py-webrtcvad",
+    "commit": "e283ca41df3a84b0e87fb1f5cb9b21580a286b09",
+    "model": null,
+    "note": "No separate weights; C VAD embedded in extension."
+  },
+  "silero": {
+    "vendor": "vendor/silero-vad",
+    "repo": "https://github.com/snakers4/silero-vad",
+    "commit": "76e3dc408eb2a5c655c34e230d2d5459b4439daa",
+    "model_dir": "models/silero",
+    "model_file": "silero_vad.onnx",
+    "model_rev": "src/silero_vad/data/silero_vad.onnx"
+  },
+  "firered": {
+    "vendor": "vendor/FireRedVAD",
+    "repo": "https://github.com/FireRedTeam/FireRedVAD",
+    "commit": "c30ec49e8cc69642b0ee65362eba11b9d11c6e54",
+    "model_dir": "models/firered",
+    "model_rev": "hf:FireRedTeam/FireRedVAD -> models/firered"
+  },
+  "_updated_at": "2026-07-21T04:19:48.891299+00:00",
+  "funasr_fsmn": {
+    "vendor_notes": "vendor/FunASR.NOTES.md",
+    "repo": "https://github.com/modelscope/FunASR",
+    "model_dir": "models/funasr_fsmn",
+    "model_rev": "hf:funasr/fsmn-vad -> models/funasr_fsmn"
+  },
+  "pyannote": {
+    "vendor_notes": "vendor/pyannote-audio.NOTES.md",
+    "repo": "https://github.com/pyannote/pyannote-audio",
+    "model_dir": "models/pyannote",
+    "model_rev": {
+      "pyannote/segmentation-3.0": "exists:models/pyannote/segmentation-3.0",
+      "pyannote/speaker-diarization-3.1": "modelscope:models/pyannote/speaker-diarization-3.1",
+      "AI-ModelScope/pyannote-segmentation-3.0": "exists:models/pyannote/segmentation-3.0"
+    },
+    "source": "modelscope"
+  }
+}

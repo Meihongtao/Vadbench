@@ -1,0 +1,79 @@
+{
+  "created_at": "2026-07-21T04:40:48.673565+00:00",
+  "frame_ms": 10.0,
+  "lang": "all",
+  "max_files": 1,
+  "engines": [
+    "pyannote"
+  ],
+  "per_file": [
+    {
+      "model": "pyannote",
+      "uri": "smoke_zh",
+      "lang": "zh",
+      "status": "ok",
+      "elapsed_s": 0.053,
+      "precision": 0.9312977099236641,
+      "recall": 1.0,
+      "f1": 0.9644268774703557,
+      "far": 0.08181818181818182,
+      "miss": 0.0,
+      "tp": 122,
+      "fp": 9,
+      "tn": 101,
+      "fn": 0,
+      "n_frames": 232,
+      "duration_s": 2.32
+    },
+    {
+      "model": "pyannote",
+      "uri": "smoke_en",
+      "lang": "en",
+      "status": "ok",
+      "elapsed_s": 0.021,
+      "precision": 0.7515923566878981,
+      "recall": 1.0,
+      "f1": 0.8581818181818183,
+      "far": 0.36792452830188677,
+      "miss": 0.0,
+      "tp": 118,
+      "fp": 39,
+      "tn": 67,
+      "fn": 0,
+      "n_frames": 224,
+      "duration_s": 2.24
+    }
+  ],
+  "summary": [
+    {
+      "lang": "zh",
+      "model": "pyannote",
+      "status": "ok",
+      "n_files": 1,
+      "hours": 0.0006444444444444444,
+      "f1": 0.9644268774703557,
+      "precision": 0.9312977099236641,
+      "recall": 1.0,
+      "far": 0.08181818181818182,
+      "miss": 0.0,
+      "f1_unweighted": 0.9644268774703557,
+      "far_unweighted": 0.08181818181818182,
+      "miss_unweighted": 0.0
+    },
+    {
+      "lang": "en",
+      "model": "pyannote",
+      "status": "ok",
+      "n_files": 1,
+      "hours": 0.0006222222222222223,
+      "f1": 0.8581818181818183,
+      "precision": 0.7515923566878981,
+      "recall": 1.0,
+      "far": 0.36792452830188677,
+      "miss": 0.0,
+      "f1_unweighted": 0.8581818181818183,
+      "far_unweighted": 0.36792452830188677,
+      "miss_unweighted": 0.0
+    }
+  ]
+}
