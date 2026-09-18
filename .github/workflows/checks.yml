@@ -21,17 +21,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # numpy is a core dependency (vadbench/__init__.py imports base.py, which
-      # needs it). No VAD engine is installed: the post-hoc analysis reads
-      # committed results/ files and never loads a model, which keeps CI fast
-      # while verifying the published numbers are still reproducible.
-      - name: Install core dependency
-        run: python -m pip install --quiet numpy
+      # Install core deps only (no VAD engine). This also exercises the
+      # packaging metadata on every supported Python, and verifies that
+      # importing vadbench does not require any engine to be present.
+      - name: Install package (core only)
+        run: python -m pip install --quiet -e .
 
       - name: Run report self-tests
         run: python tests/test_report.py
 
-      - name: Verify minimal install degrades gracefully
+      - name: Verify missing optional deps degrade gracefully
         run: python tests/check_minimal_install.py
 
       - name: Recompute metrics from committed results
@@ -55,12 +54,14 @@ jobs:
       - name: Byte-compile all sources
         run: python -m compileall -q vadbench tests
 
-      - name: Check every module imports without heavy deps
+      - name: Install package (core only)
+        run: python -m pip install --quiet -e .
+
+      - name: Import package and report engine inventory
         run: |
-          python -m pip install --quiet numpy soundfile
           python -c "
           import vadbench
-          from vadbench.report import collect, tables
-          print('engines registered:', vadbench.available())
-          print('version:', vadbench.__version__)
+          print('available  :', vadbench.available())
+          print('unavailable:', list(vadbench.unavailable()))
+          print('version    :', vadbench.__version__)
           "

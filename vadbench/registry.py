@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from vadbench.base import BaseVad
@@ -32,6 +33,29 @@ _ENGINE_EXTRA: dict[str, str] = {
     "firered": "firered",
     "firered_onnx": "firered",
 }
+
+# Core dependencies, needed by every engine. If one of these is what's missing,
+# pointing at an engine extra would be misleading.
+_CORE_MODULES: frozenset[str] = frozenset(
+    {"numpy", "soundfile", "huggingface_hub", "requests"}
+)
+
+_MISSING_MODULE_RE = re.compile(r"No module named '([^']+)'")
+
+
+def _install_hint(engine: str, reason: str) -> str:
+    """Turn an ImportError string into the pip command that actually fixes it."""
+    match = _MISSING_MODULE_RE.search(reason)
+    module = match.group(1).split(".")[0] if match else ""
+    if module in _CORE_MODULES:
+        return (
+            " That is a core dependency, not an engine extra -- reinstall the "
+            'package: pip install -e "."'
+        )
+    extra = _ENGINE_EXTRA.get(engine)
+    if extra:
+        return f' Try: pip install -e ".[{extra}]"'
+    return ""
 
 
 def register(name: str):
@@ -77,11 +101,9 @@ def create(name: str, **kwargs: Any) -> BaseVad:
     if key not in _REGISTRY:
         missing = unavailable().get(key)
         if missing is not None:
-            extra = _ENGINE_EXTRA.get(key)
-            hint = f' pip install -e ".[{extra}]"' if extra else ""
             raise ImportError(
                 f"VAD '{key}' is registered but its dependencies are missing: "
-                f"{missing}.{hint}"
+                f"{missing}.{_install_hint(key, missing)}"
             )
         raise KeyError(
             f"Unknown VAD '{name}'. Available: {', '.join(available()) or '(none loaded)'}"

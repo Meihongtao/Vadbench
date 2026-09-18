@@ -11,6 +11,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from vadbench.registry import _ENGINE_MODULE  # noqa: E402
+
 BLOCKED = {
     "torch",
     "torchaudio",
@@ -41,29 +43,50 @@ def main() -> int:
 
     import vadbench
 
-    print("available  :", vadbench.available())
-    if not vadbench.available():
-        print("FAIL: nothing registered; minimal install should still expose engines")
-        return 1
-
+    available = vadbench.available()
+    unavailable = vadbench.unavailable()
+    print("available  :", available)
     print("unavailable:")
-    for engine, reason in vadbench.unavailable().items():
+    for engine, reason in unavailable.items():
         print(f"    {engine:<16} {reason[:60]}")
 
-    # An engine whose deps are missing must fail loudly at create() time, and
-    # the message must say which optional group to install.
-    for engine in ("pyannote", "funasr_fsmn", "silero"):
+    # Importing the package must not explode just because an optional dependency
+    # is missing. Whether any engine ends up usable depends on what is
+    # installed, so that is not itself an assertion -- on a bare interpreter
+    # `available()` legitimately returns [].
+    known = set(_ENGINE_MODULE)
+    assert set(available) | set(unavailable) == known, (
+        f"engine accounting mismatch: available={sorted(available)}, "
+        f"unavailable={sorted(unavailable)}, known={sorted(known)}"
+    )
+    assert not (set(available) & set(unavailable)), "engine both available and not"
+
+    # Every engine whose deps are blocked must fail at create() with a message
+    # naming the engine and the exact pip command that fixes it.
+    for engine in sorted(unavailable):
         try:
             vadbench.create(engine)
         except ImportError as e:
-            assert "pip install" in str(e), f"unhelpful message for {engine}: {e}"
-            print(f"create({engine}) -> ImportError: {e}")
+            msg = str(e)
+            assert engine in msg, f"message for {engine} does not name it: {msg}"
+            assert "pip install" in msg, f"unhelpful message for {engine}: {msg}"
+            print(f"create({engine}) -> ImportError: {msg}")
+        except Exception as e:  # noqa: BLE001
+            print(f"FAIL: create({engine}) raised {type(e).__name__}: {e}")
+            return 1
         else:
-            if engine in vadbench.available():
-                print(f"create({engine}) -> constructed (deps actually present)")
-            else:
-                print(f"FAIL: create({engine}) neither raised nor registered")
-                return 1
+            print(f"FAIL: create({engine}) succeeded despite missing deps")
+            return 1
+
+    # Engines that did load must be constructible (or fail only for model files,
+    # which are downloaded separately and absent in a fresh clone).
+    for engine in sorted(available):
+        try:
+            vadbench.create(engine)
+        except (FileNotFoundError, ImportError) as e:
+            print(f"create({engine}) -> {type(e).__name__} (expected: no model files)")
+        else:
+            print(f"create({engine}) -> ok")
 
     # A genuinely unknown name is still a KeyError, not an ImportError.
     try:
